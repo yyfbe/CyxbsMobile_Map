@@ -8,6 +8,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.mredrock.cyxbs.common.config.DISCOVER_MAP
+import com.mredrock.cyxbs.common.service.ServiceManager
+import com.mredrock.cyxbs.common.service.account.IAccountService
 import com.mredrock.cyxbs.common.ui.BaseActivity
 
 @Route(path = DISCOVER_MAP)
@@ -18,7 +20,13 @@ class MapActivity : BaseActivity() {
     @SuppressLint("SetJavaScriptEnabled", "ObsoleteSdkInt")
     override fun onStart() {
         super.onStart()
-
+        val userState = ServiceManager.getService(IAccountService::class.java).getVerifyService()
+        if (!userState.isLogin()) {
+            //这里只是模拟一下登录，如果有并发需求，自己设计
+            Thread {
+                userState.login(this, "你的学号", "你的后6位")
+            }.start()
+        }
         webView = WebView(this)
         setContentView(webView)
 

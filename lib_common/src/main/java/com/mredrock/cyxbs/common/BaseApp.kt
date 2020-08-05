@@ -33,6 +33,7 @@ open class BaseApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         createChannel()
         //若以后还会有这种非必须在application启动时初始化的第三方SDK请写在InitTask中然后添加到这里的just里面
         Observable.just(

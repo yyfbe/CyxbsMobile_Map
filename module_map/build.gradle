@@ -2,5 +2,6 @@ apply from: module_config
 
 dependencies {
     implementation project(':lib_common')
+    implementation project(':lib_account')
     kapt deps.arouter.compiler
 }
