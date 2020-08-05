@@ -1,0 +1,110 @@
+apply from: lib_config
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+apply from: secret
+
+android.defaultConfig {
+    manifestPlaceholders = secret.manifestPlaceholders
+    secret.buildConfigField.forEach({ k, v ->
+        buildConfigField("String", k, v)
+    })
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    // copy if need Unit Testing
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+
+    //上线之前如果需要检测是否有内存泄漏，直接解除注释，然后安装debug版本的掌邮
+    // 就会附带一个LeakCanary的app来检测是否有内存泄漏
+    //debugApi 'com.squareup.leakcanary:leakcanary-android:2.2'
+
+    //https://github.com/whataa/pandora
+    //开发测试工具，如果需要解除注释
+    //debugApi 'com.github.whataa:pandora:androidx_v2.1.0'
+    //releaseApi 'com.github.whataa:pandora-no-op:v2.1.0'
+
+    //kotlin
+    api deps.kotlin.runtime
+    api deps.kotlin.anko
+    api deps.kotlin.core
+    //official ui and support library
+    api deps.support.constraint
+    api deps.support.app_compat
+    api deps.support.recyclerview
+    api deps.support.cardview
+    api deps.support.design
+    api deps.support.v4
+    api deps.support.multidex
+
+    //events and router
+    api deps.arouter.runtime
+    api deps.eventbus.runtime
+
+    //network
+    api deps.glide.runtime
+    api deps.glide.okhttp_integration
+    api deps.okhttp.okhttp3
+    api deps.okhttp.logging_interceptor
+    api deps.retrofit.rxjava2
+    api deps.retrofit.gson
+    api deps.retrofit.runtime
+    api deps.rxjava.runtime
+    api deps.rxjava.rxandroid
+    api deps.rxjava.rxkotlin
+    api deps.gson.runtime
+
+    // 由于更新的接口统一成json了，新版本就不需要这个依赖了
+    // 如果以后需要xml依赖(深思)
+    // 官方已经弃用SimpleXML改用JAXB了，建议跟上
+    // https://github.com/square/retrofit/tree/master/retrofit-converters/jaxb
+//    api('com.squareup.retrofit2:converter-simplexml:2.7.2') {
+//        exclude group: 'xpp3', module: 'xpp3'
+//        exclude group: 'stax', module: 'stax-api'
+//        exclude group: 'stax', module: 'stax'
+//    }
+
+    //architecture
+    api deps.lifecycle.extensions
+    api deps.lifecycle.viewmodel_ktx
+    api deps.lifecycle.java8
+    api deps.lifecycle.reactivestrean
+    kapt deps.lifecycle.compiler
+    api deps.room.runtime
+    api deps.room.rxjava
+    kapt deps.room.compiler
+    api deps.paging.runtime
+    api deps.paging.rxjava
+    api deps.workmanager.runtime
+
+    //permission
+    api deps.rxpermissions.runtime
+
+    //umeng
+    api deps.umeng.common
+    api deps.umeng.analytics
+
+    //bugly
+    api deps.bugly.crashreport
+    api deps.bugly.nativecrashreport
+
+    // walle
+    api deps.walle.runtime
+
+    //airbnb
+    api deps.airbnb.lottie
+
+
+    //杂项
+    api 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    api 'com.github.yalantis:ucrop:2.2.4'
+    api 'com.github.chrisbanes:PhotoView:2.3.0'
+    api project(path: ':push_sdk')
+
+}
